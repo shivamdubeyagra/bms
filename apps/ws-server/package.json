@@ -1,0 +1,19 @@
+{
+  "name": "ws-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "npm run build && npm run start",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@repo/db": "*",
+    "@repo/typescript-config": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
