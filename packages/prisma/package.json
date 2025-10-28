@@ -12,7 +12,7 @@
     "@repo/typescript-config": "*"
   },
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "prisma": "^6.17.1"
