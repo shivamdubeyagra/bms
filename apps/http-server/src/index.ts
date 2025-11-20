@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json())
 
 app.get("/",(req,res)=>{
-    res.send("Hi there");
+    res.send("Hi there Shivam");
 })
 
 app.post("/signup",async(req,res)=>{
