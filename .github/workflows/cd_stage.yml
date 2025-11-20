@@ -11,15 +11,16 @@ jobs:
     steps:
       - name: SSH INTO SERVER
         run: |
-          # Write SSH key
+          # Save key
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
           chmod 600 ~/ssh_key
 
-          # Add server to known hosts (mandatory)
+          # Add server to known hosts
           ssh-keyscan -H 13.51.178.27 >> ~/.known_hosts
 
-          # SSH and run all commands inside server
+          # SSH and run commands inside server
           ssh -i ~/ssh_key -o UserKnownHostsFile=~/.known_hosts ubuntu@13.51.178.27 << 'EOF'
+            source ~/.nvm/nvm.sh
             cd bms/
             git pull origin main
             npm install
