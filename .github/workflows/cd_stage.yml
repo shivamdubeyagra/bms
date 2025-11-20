@@ -1,19 +1,28 @@
-name : Deploy to stage
-on : 
-  push :
-    branches :
+name: Deploy to stage
 
+on: 
+  push:
+    branches:
       - "main"
 
-jobs :
-  deploy_to_stage_everything :
-    runs-on : ubuntu-latest
-    steps :
-      - name : SSH INTO SERVER
-        run : |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
-          ssh -i ~/ssh_key ubuntu@13.51.178.27 
-          cd bms/ && git pull origin main
-          npm install
-          npm run build
-          pm2 restart all
+jobs:
+  deploy_to_stage_everything:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH INTO SERVER
+        run: |
+          # Write SSH key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
+          chmod 600 ~/ssh_key
+
+          # Add server to known hosts (mandatory)
+          ssh-keyscan -H 13.51.178.27 >> ~/.known_hosts
+
+          # SSH and run all commands inside server
+          ssh -i ~/ssh_key -o UserKnownHostsFile=~/.known_hosts ubuntu@13.51.178.27 << 'EOF'
+            cd bms/
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all
+          EOF
