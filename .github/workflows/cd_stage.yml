@@ -31,5 +31,19 @@ jobs:
             git pull origin main
             npm install
             npm run build
-            pm2 restart all
+            pm2 restart all || true
+            if [ $(pm2 list | grep -c "online") -eq 0 ]; then
+              echo "No PM2 processes found. Starting apps..."
+
+              cd apps/http-server
+              pm2 start npm --name "http-server" -- start
+              cd ../ws-server
+              pm2 start npm --name "ws-server" -- start
+              cd ../fe-server
+              pm2 start npm --name "fe-server" -- start
+
+              pm2 save
+            else
+              echo "PM2 processes restarted successfully."
+            fi
           EOF
