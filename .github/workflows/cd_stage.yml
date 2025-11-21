@@ -18,11 +18,11 @@ jobs:
 
       - name: Add server fingerprint
         run: |
-          ssh-keyscan -H 13.51.178.27 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 51.20.77.134 >> ~/.ssh/known_hosts
 
       - name: SSH and deploy
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@13.51.178.27 << 'EOF'
+          ssh -i ~/.ssh/id_rsa ubuntu@51.20.77.134 << 'EOF'
             # Load NVM so that node, npm, pm2 become available
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
