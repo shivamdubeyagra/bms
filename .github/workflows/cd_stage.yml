@@ -1,6 +1,6 @@
 name: Deploy to stage
 
-on: 
+on:
   push:
     branches:
       - "main"
@@ -8,23 +8,28 @@ on:
 jobs:
   deploy_to_stage_everything:
     runs-on: ubuntu-latest
+
     steps:
-      - name: SSH INTO SERVER
+      - name: Create .ssh folder and add private key
         run: |
-          # Save key
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
-          chmod 600 ~/ssh_key
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-          # Add server to known hosts
-          ssh-keyscan -H 13.51.178.27 >> ~/.known_hosts
+      - name: Add server fingerprint
+        run: |
+          ssh-keyscan -H 13.51.178.27 >> ~/.ssh/known_hosts
 
-          # SSH and run commands inside server
-          ssh -i ~/ssh_key -o UserKnownHostsFile=~/.known_hosts ubuntu@13.51.178.27 << 'EOF'
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-cd bms/
-git pull origin main
-npm install
-npm run build
-pm2 restart all
-EOF
+      - name: SSH and deploy
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@13.51.178.27 << 'EOF'
+            # Load NVM so that node, npm, pm2 become available
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            cd bms/
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all
+          EOF
