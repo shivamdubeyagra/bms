@@ -20,10 +20,10 @@ jobs:
 
           # SSH and run commands inside server
           ssh -i ~/ssh_key -o UserKnownHostsFile=~/.known_hosts ubuntu@13.51.178.27 << 'EOF'
-            source ~/.nvm/nvm.sh
-            cd bms/
-            git pull origin main
-            npm install
-            npm run build
-            pm2 restart all
-          EOF
+source ~/.nvm/nvm.sh
+cd bms/
+git pull origin main
+npm install
+npm run build
+pm2 restart all
+EOF
