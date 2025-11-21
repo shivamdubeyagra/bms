@@ -8,7 +8,7 @@ export default async function Home() {
   return (
     <div>
       <h1>{user?.username}</h1>
-      
+      <h2>Hi Ram Pukar</h2>
     </div>
   );
 }
