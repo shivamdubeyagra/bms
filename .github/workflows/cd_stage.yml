@@ -20,7 +20,8 @@ jobs:
 
           # SSH and run commands inside server
           ssh -i ~/ssh_key -o UserKnownHostsFile=~/.known_hosts ubuntu@13.51.178.27 << 'EOF'
-source ~/.nvm/nvm.sh
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 cd bms/
 git pull origin main
 npm install
