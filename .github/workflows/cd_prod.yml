@@ -1,0 +1,49 @@
+name: Deploy to production
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  deploy_to_production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create .ssh folder and add private key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add server fingerprint
+        run: |
+          ssh-keyscan -H 13.51.47.242 >> ~/.ssh/known_hosts
+
+      - name: SSH and deploy
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@13.51.47.242 << 'EOF'
+            # Load NVM so that node, npm, pm2 become available
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            cd bms/
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all || true
+            if [ $(pm2 list | grep -c "online") -eq 0 ]; then
+              echo "No PM2 processes found. Starting apps..."
+
+              cd apps/http-server
+              pm2 start npm --name "http-server" -- start
+              cd ../ws-server
+              pm2 start npm --name "ws-server" -- start
+              cd ../web
+              pm2 start npm --name "fe-server" -- start
+
+              pm2 save
+            else
+              echo "PM2 processes restarted successfully."
+            fi
+          EOF
