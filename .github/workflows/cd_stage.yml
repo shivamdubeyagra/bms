@@ -39,7 +39,7 @@ jobs:
               pm2 start npm --name "http-server" -- start
               cd ../ws-server
               pm2 start npm --name "ws-server" -- start
-              cd ../fe-server
+              cd ../web
               pm2 start npm --name "fe-server" -- start
 
               pm2 save
