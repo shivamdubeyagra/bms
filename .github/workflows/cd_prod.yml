@@ -1,4 +1,4 @@
-name: Deploy to production
+name: Deploy to Production Environment
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "main"
 
 jobs:
-  deploy_to_production:
+  deploy_to_production_everything:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
 
       - name: SSH and deploy
         run: |
-          ssh -tt -i ~/.ssh/id_rsa ubuntu@13.51.47.242 << 'EOF'
+          ssh -i ~/.ssh/id_rsa ubuntu@13.51.47.242 << 'EOF'
             # Load NVM so that node, npm, pm2 become available
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
